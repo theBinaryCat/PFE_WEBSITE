@@ -11,7 +11,8 @@ const bcrypt = require('bcrypt')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
-
+//allows the use of HTTP verb DELETE in web forms
+const methodOverride = require('method-override')
 
 connect()
 
@@ -65,9 +66,11 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+
 app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(methodOverride('_method'))
 
 
 app.get('/', checkAuthenticated, (req, res) => {
@@ -116,6 +119,16 @@ app.post('/register', checkNotAuthenticated,async (req, res) => {
     //if the registration is failed, redirect to registration page
     res.redirect('/register')
   }
+})
+
+app.delete('/logout', (req, res) => {
+  
+  req.logout(function(err) {
+    if(err) {
+      console.log(err);
+    }
+    res.redirect('/login');
+  })
 })
 
 function checkAuthenticated(req, res, next) {
