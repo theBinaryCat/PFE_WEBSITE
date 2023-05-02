@@ -1,27 +1,27 @@
 const oracledb = require('oracledb')
 const config = require('./config')
-
+let pool
 async function connect() {
   try {
     //replace the connection info by config
-    await oracledb.createPool(config)
+    pool = await oracledb.createPool(config)
     console.log('Connected to Oracle database')
   } catch (error) {
     console.error(error)
   }
 }
 
-async function close() {
+async function closePool() {
   try {
-    await oracledb.getPool().close()
-    console.log('Disconnected from Oracle database')
+    await pool.close(10);
+    console.log('Pool closed');
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 }
 
 module.exports = {
   connect,
-  close,
+  closePool,
   getConnection: () => oracledb.getConnection()
 }

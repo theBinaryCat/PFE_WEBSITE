@@ -4,7 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const express = require('express')
 const routes = require('./routes/test')
-const { connect, close, getConnection } = require('./db/connect')
+const { getConnection, connect, closePool } = require('./db/connect')
 const app = express()
 //hash and compare passwords
 const bcrypt = require('bcrypt')
@@ -18,20 +18,19 @@ const session = require('express-session')
 const methodOverride = require('method-override')
 
 
-connect()
 const initialize = require('./passport-config')
 initialize(
   passport,
   //getUserByEmail 
   async (email) => {
     try {
-
+      await connect()
       const connection = await getConnection()
       const result = await connection.execute(
         'SELECT * FROM users WHERE email = :email',
         {email}
       )
-      await close();
+      await closePool()
       if (result.rows.length > 0) {
         const user = {};
         const metaData = result.metaData;
@@ -52,12 +51,13 @@ initialize(
   //getUserById
   async (id) => {
     try {
+      await connect()
       const connection = await getConnection()
       const result = await connection.execute(
         'SELECT * FROM users WHERE TO_NUMBER(id) = :id',
         {id}
       )
-      await close();
+      await closePool();
       if (result.rows.length > 0) {
         const user = {};
         const metaData = result.metaData;
@@ -125,6 +125,7 @@ app.post('/register', checkNotAuthenticated,async (req, res) => {
     console.log(req.body.name)
     console.log(req.body.email)
     console.log(req.body.password)
+    await connect()
     const connection = await getConnection()
     //store the new user in our database
     await connection.execute(
@@ -133,7 +134,7 @@ app.post('/register', checkNotAuthenticated,async (req, res) => {
     await connection.execute(
       `commit`
     );
-    await close();
+    await closePool();
     //if the registration is succefull, redirect to login page
     res.redirect('/login')
   } catch (e){
@@ -176,6 +177,6 @@ app.listen(port, () => {
 // Gracefully shutdown the server on interrupt signals
 process.on('SIGINT', async () => {
   console.log('Shutting down server gracefully')
-  await close()
+  await closePool()
   process.exit(0)
 })
