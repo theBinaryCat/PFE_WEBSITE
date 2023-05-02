@@ -8,17 +8,21 @@ const { connect, close, getConnection } = require('./db/connect')
 const app = express()
 //hash and compare passwords
 const bcrypt = require('bcrypt')
+//authentication middleware 
 const passport = require('passport')
+//display a message to the user after an action has been taken(exp: successful login )
 const flash = require('express-flash')
+//enables session management in Express
 const session = require('express-session')
-//allows the use of HTTP verb DELETE in web forms
+//allows the use of HTTP verb DELETE in web forms (used for logout functionality)
 const methodOverride = require('method-override')
 
-connect()
 
+connect()
 const initialize = require('./passport-config')
 initialize(
   passport,
+  //getUserByEmail 
   async (email) => {
     try {
 
@@ -37,7 +41,7 @@ initialize(
       console.error(error)
     }
   },
-  
+  //getUserById
   async (id) => {
     try {
       const connection = await getConnection()
@@ -78,6 +82,7 @@ app.get('/', checkAuthenticated, (req, res) => {
   res.render('index.ejs', { name: req.user.name })
 })
 
+//display the login page
 app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs')
 })
@@ -88,6 +93,7 @@ app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   failureFlash: true
 }))
 
+//display the register page
 app.get('/register', checkNotAuthenticated, (req, res) => {
   res.render('register.ejs')
 })
@@ -95,7 +101,7 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
 app.post('/register', checkNotAuthenticated,async (req, res) => {
   try {
     //hash the password of the new user
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
     //test
     console.log('hashedPassword:', hashedPassword);
     console.log('req.body.password:', req.body.password);
