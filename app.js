@@ -33,8 +33,16 @@ initialize(
       )
       await close();
       if (result.rows.length > 0) {
-        const user = result.rows[0]
-        console.log('test get user by email',user[3])
+        const user = {};
+        const metaData = result.metaData;
+        const row = result.rows[0];
+        //from array to json format
+        for (let i = 0; i < metaData.length; i++) {
+          const columnName = metaData[i].name.toLowerCase();
+          user[columnName] = row[i];
+        }
+        //test
+        console.log('getUserByEmail',user)
         return user
       }
     } catch (error) {
@@ -51,8 +59,16 @@ initialize(
       )
       await close();
       if (result.rows.length > 0) {
-        const user = result.rows[0]
-        console.log('test get user by id',user)
+        const user = {};
+        const metaData = result.metaData;
+        const row = result.rows[0];
+        //from array to json format
+        for (let i = 0; i < metaData.length; i++) {
+          const columnName = metaData[i].name.toLowerCase();
+          user[columnName] = row[i];
+        }
+        //test
+        console.log('getUserById',user)
         return user
       }
     } catch (error) {

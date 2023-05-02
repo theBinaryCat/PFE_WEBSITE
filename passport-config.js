@@ -13,7 +13,7 @@ function initialize(passport,getUserByEmail, getUserById) {
         }
         try {
             //compare the entred password with the existing one
-            if (await bcrypt.compare(password, user[3])) {
+            if (await bcrypt.compare(password, user.password)) {
                 return done(null, user)
         } else {
             return done(null, false, { message: 'Password incorrect' })
@@ -24,7 +24,7 @@ function initialize(passport,getUserByEmail, getUserById) {
     }
 
     passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser))
-    passport.serializeUser((user, done) => done(null, user[0]))
+    passport.serializeUser((user, done) => done(null, user.id))
     passport.deserializeUser((id, done) => {
         return done(null, getUserById(id))
     })
