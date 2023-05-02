@@ -93,9 +93,10 @@ app.use(passport.session())
 app.use(methodOverride('_method'))
 
 
-app.get('/', checkAuthenticated, (req, res) => {
-  console.log(req.user)
-  res.render('index.ejs', { name: req.user.name })
+app.get('/', checkAuthenticated, async (req, res) => {
+  const user = await req.user
+  console.log('the user name: ',user.name)
+  res.render('index.ejs', { name: user.name })
 })
 
 //display the login page
