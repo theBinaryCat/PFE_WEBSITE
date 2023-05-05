@@ -16,6 +16,8 @@ const flash = require('express-flash')
 const session = require('express-session')
 //allows the use of HTTP verb DELETE in web forms (used for logout functionality)
 const methodOverride = require('method-override')
+//for CSS
+const mime = require('mime');
 
 
 const initialize = require('./passport-config')
@@ -92,6 +94,13 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
 
+//FOR CSS
+app.use(express.static(__dirname + '/views'))
+
+app.get('/index.css', function(req, res) {
+  res.setHeader('Content-Type', mime.getType('index.css'))
+  res.sendFile(__dirname + '/views/index.css')
+})
 
 app.get('/', checkAuthenticated, async (req, res) => {
   const user = await req.user
