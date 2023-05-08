@@ -3,12 +3,11 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const express = require('express')
-const routes = require('./routes/test')
 const { getConnection, connect, closePool } = require('./db/connect')
 const {checkAuthenticated, checkNotAuthenticated} = require('./middlewares/authentification')
+const {getLogin, postLogin, getRegister, postRegister, logout, dashboard, getCSS} = require('./controllers/authentication')
 const app = express()
-//hash and compare passwords
-const bcrypt = require('bcrypt')
+
 //authentication middleware 
 const passport = require('passport')
 //display a message to the user after an action has been taken(exp: successful login )
@@ -17,8 +16,7 @@ const flash = require('express-flash')
 const session = require('express-session')
 //allows the use of HTTP verb DELETE in web forms (used for logout functionality)
 const methodOverride = require('method-override')
-//for CSS
-const mime = require('mime');
+
 
 
 const initialize = require('./passport-config')
@@ -80,6 +78,8 @@ initialize(
   }
 )
 
+//FOR CSS
+app.use(express.static(__dirname + '/views'))
 //set the view engine for our application to EJS (rendering dynamic HTML to client requests)
 app.set('view-engine', 'ejs')
 //Take data from the forms and build access to them inside our request variable in post method
@@ -89,81 +89,20 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
-
 app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
 
-//FOR CSS
-app.use(express.static(__dirname + '/views'))
-
-app.get('/index.css', function(req, res) {
-  res.setHeader('Content-Type', mime.getType('index.css'))
-  res.sendFile(__dirname + '/views/index.css')
-})
-
-app.get('/', checkAuthenticated, async (req, res) => {
-  const user = await req.user
-  console.log('the user name: ',user.name)
-  res.render('index.ejs', { name: user.name })
-})
-
+app.get('/index.css', getCSS)
+app.get('/', checkAuthenticated, dashboard)
 //display the login page
-app.get('/login', checkNotAuthenticated, (req, res) => {
-  res.render('login.ejs')
-})
-
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: true
-}))
-
+app.get('/login', checkNotAuthenticated, getLogin)
+app.post('/login', checkNotAuthenticated, postLogin)
 //display the register page
-app.get('/register', checkNotAuthenticated, (req, res) => {
-  res.render('register.ejs')
-})
-
-app.post('/register', checkNotAuthenticated,async (req, res) => {
-  try {
-    //hash the password of the new user
-    const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    //test
-    console.log('hashedPassword:', hashedPassword);
-    console.log('req.body.password:', req.body.password);
-    console.log(Date.now())
-    console.log(req.body.name)
-    console.log(req.body.email)
-    console.log(req.body.password)
-    await connect()
-    const connection = await getConnection()
-    //store the new user in our database
-    await connection.execute(
-      `INSERT INTO users (id, name, email, password) VALUES (${Date.now()}, '${req.body.name}', '${req.body.email}', '${hashedPassword}')`
-    );
-    await connection.execute(
-      `commit`
-    );
-    await closePool();
-    //if the registration is succefull, redirect to login page
-    res.redirect('/login')
-  } catch (e){
-    console.error(e)
-    //if the registration is failed, redirect to registration page
-    res.redirect('/register')
-  }
-})
-
-app.delete('/logout', (req, res) => {
-  
-  req.logout(function(err) {
-    if(err) {
-      console.log(err);
-    }
-    res.redirect('/login');
-  })
-})
+app.get('/register', checkNotAuthenticated, getRegister)
+app.post('/register', checkNotAuthenticated, postRegister)
+app.delete('/logout', logout)
 
 // Start the server
 const port = process.env.PORT || 5000
