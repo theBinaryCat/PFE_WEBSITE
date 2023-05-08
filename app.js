@@ -5,6 +5,7 @@ if (process.env.NODE_ENV !== 'production') {
 const express = require('express')
 const routes = require('./routes/test')
 const { getConnection, connect, closePool } = require('./db/connect')
+const {checkAuthenticated, checkNotAuthenticated} = require('./middlewares/authentification')
 const app = express()
 //hash and compare passwords
 const bcrypt = require('bcrypt')
@@ -164,20 +165,6 @@ app.delete('/logout', (req, res) => {
   })
 })
 
-function checkAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next()
-  }
-
-  res.redirect('/login')
-}
-
-function checkNotAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return res.redirect('/')
-  }
-  next()
-}
 // Start the server
 const port = process.env.PORT || 5000
 app.listen(port, () => {
