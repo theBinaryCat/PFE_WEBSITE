@@ -1,12 +1,16 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-
+const port = process.env.PORT || 5000
 const express = require('express')
+const app = express()
+const oracledb = require('oracledb')
+// Set the queueTimeout value
+oracledb.queueTimeout = 120000;
 const { getConnection, connect, closePool } = require('./db/connect')
 const {checkAuthenticated, checkNotAuthenticated} = require('./middlewares/authentification')
 const {getLogin, postLogin, getRegister, postRegister, logout, dashboard, getCSS} = require('./controllers/authentication')
-const app = express()
+
 
 //authentication middleware 
 const passport = require('passport')
@@ -105,10 +109,16 @@ app.post('/register', checkNotAuthenticated, postRegister)
 app.delete('/logout', logout)
 
 // Start the server
-const port = process.env.PORT || 5000
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`)
-})
+// Start the server
+const start = async() => {
+  try{
+      await connect()
+      app.listen(port,()=>{console.log(`Server is listening on port ${port} ...`)})
+  } catch(error){
+      console.log(error)
+  }
+}
+start()
 
 // Gracefully shutdown the server on interrupt signals
 process.on('SIGINT', async () => {
