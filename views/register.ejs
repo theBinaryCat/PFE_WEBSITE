@@ -8,13 +8,13 @@
 
     <section>
         
-        <form action="/register" method="POST">
+        <form action="/auth/register" method="POST">
         <div class="form-box">
             <div class="form-value">
                 <form action="">
                     <h2>S'inscrire</h2>
                     <div class="inputbox">
-                      <ion-icon name="person-outline"></ion-icon>
+                        <ion-icon name="person-outline"></ion-icon>
                         <input type="name" id="name" name="name" required>
                         <label for="name">Nom</label>
                     </div>
@@ -30,7 +30,7 @@
                     </div>
                     <button type="submit">S'inscrire</button>
                     <div class="login">
-                        <p>Vous avez un compte <a href="/login">Connectez-vous</a></p>
+                        <p>Vous avez un compte <a href="/auth/login">Connectez-vous</a></p>
                     </div>
                 </form>
             </div>

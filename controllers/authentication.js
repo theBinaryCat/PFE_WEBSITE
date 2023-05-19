@@ -6,21 +6,13 @@ const passport = require('passport')
 const bcrypt = require('bcrypt')
 //display a message to the user after an action has been taken(exp: successful login )
 
-//for CSS
-const mime = require('mime');
-
-const getCSS = function(req, res) {
-    res.setHeader('Content-Type', mime.getType('index.css'))
-    res.sendFile(__dirname + '/views/index.css')
-}
-
 const getLogin = (req, res) => {
     res.render('login.ejs')
 }
 
 const postLogin = passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
+    successRedirect: '/auth',
+    failureRedirect: '/auth/login',
     failureFlash: true
 })
 
@@ -50,11 +42,11 @@ const postRegister = async (req, res) => {
     );
     await closePool();
       //if the registration is succefull, redirect to login page
-    res.redirect('/login')
+    res.redirect('/auth/login')
     } catch (e){
     console.error(e)
       //if the registration is failed, redirect to registration page
-    res.redirect('/register')
+    res.redirect('/auth/register')
     }
 }
 
@@ -64,7 +56,7 @@ const logout = (req, res) => {
     if(err) {
         console.log(err);
     }
-    res.redirect('/login');
+    res.redirect('/auth/login');
     })
 }
 
@@ -74,4 +66,4 @@ const dashboard = async (req, res) => {
     res.render('index.ejs', { name: user.name })
 }   
 
-module.exports = {getLogin, postLogin, getRegister, postRegister, logout, dashboard, getCSS}
+module.exports = {getLogin, postLogin, getRegister, postRegister, logout, dashboard}
