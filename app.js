@@ -9,6 +9,7 @@ const oracledb = require('oracledb')
 oracledb.queueTimeout = 120000;
 const {connect, closePool } = require('./db/connect')
 const auth = require('./routes/authentication')
+const dashboard = require('./routes/dashboard')
 
 //authentication middleware 
 const passport = require('passport')
@@ -34,7 +35,7 @@ app.use(passport.session())
 app.use(methodOverride('_method'))
 //use the authentication routes
 app.use('/auth',auth)
-
+app.use('/dashboard',dashboard)
 // Start the server
 const start = async() => {
   try{
