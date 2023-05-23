@@ -6,7 +6,7 @@ const {checkAuthenticated} = require('../middlewares/authentification')
 router.use(express.static('./views'))
 
 router.get('/', checkAuthenticated, dashboard)
-router.get('/api/data', checkAuthenticated, fetchDataCA)
+router.get('/api/dataCA', checkAuthenticated, fetchDataCA)
 router.get('/chiffre-daffaire', checkAuthenticated, (req, res) => {
     res.render('dashboard_CA.ejs')})
 

@@ -1,7 +1,7 @@
 // Fetch data from the server
 async function fetchData() {
     try {
-      const response = await fetch('/dashboard/api/data');
+      const response = await fetch('/dashboard/api/dataCA');
       if (!response.ok) {
         throw new Error('Request failed');
       }
