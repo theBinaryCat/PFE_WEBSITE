@@ -1,4 +1,27 @@
-<h1>Hi <%= name %></h1>
+<!-- <h1>Hi <%= name %></h1>
 <form action="/auth/logout?_method=DELETE" method="POST">
   <button type="submit">Log Out</button>
-</form>
+</form> -->
+
+<!-- La méthode DELETE ne fonctionne pas du coup j'ai utilisé GET pour le bouton de deconnexion -->
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1"
+    />
+    <title>Dashboard SAA</title>
+    <!-- icon -->
+    <link rel="shortcut icon" href="/images/saa-logo.png" type="image/x-icon" />
+    <link rel="stylesheet" href="/css/partials.css" type="text/css" />
+  </head>
+  <body>
+    <div class="grid-container">
+      <%- include('partials/header') %> <%- include('partials/sidebar') %> <%-
+      include('./partials/footer') %>
+    </div>
+  </body>
+</html>
