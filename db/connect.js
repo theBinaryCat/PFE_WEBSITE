@@ -1,13 +1,13 @@
-const oracledb = require('oracledb')
-const config = require('./config')
-let pool
+const oracledb = require('oracledb');
+const config = require('./config');
+let pool;
 async function connect() {
   try {
     //replace the connection info by config
-    pool = await oracledb.createPool(config)
-    console.log('Connected to Oracle database')
+    pool = await oracledb.createPool(config);
+    console.log('Connected to Oracle database');
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 }
 
@@ -23,5 +23,5 @@ async function closePool() {
 module.exports = {
   connect,
   closePool,
-  getConnection: () => oracledb.getConnection()
-}
+  getConnection: () => oracledb.getConnection(),
+};

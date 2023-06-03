@@ -1,16 +1,16 @@
-const { getConnection, connect, closePool } = require("../db/connect");
-const { queryCA1, queryCA2, queryCA3 } = require("../queries");
+const { getConnection, connect, closePool } = require('../db/connect');
+const { queryCA1, queryCA2, queryCA3 } = require('../queries');
 
 const dashboard = async (req, res) => {
   const user = await req.user;
-  console.log("the user name: ", user.name);
-  res.render("index.ejs", { name: user.name });
+  console.log('the user name: ', user.name);
+  res.render('index.ejs', { name: user.name });
 };
 
 const dashboard_CA = async (req, res) => {
   const user = await req.user;
-  console.log("the user name: ", user.name);
-  res.render("dashboards/production.ca.ejs", { name: user.name });
+  console.log('the user name: ', user.name);
+  res.render('dashboards/production.ca.ejs', { name: user.name });
 };
 
 // Query the database and fetch data
@@ -52,7 +52,7 @@ const fetchDataCA = async (req, res) => {
       data2: data2,
       data3: data3,
     };
-    console.log("fetch data:", data);
+    console.log('fetch data:', data);
     res.json(data);
   } catch (error) {
     console.error(error);

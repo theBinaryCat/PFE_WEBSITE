@@ -1,5 +1,5 @@
 /* Import Google font - Poppins */
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Roboto:wght@300;500;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Roboto:wght@300;500;700&display=swap');
 /* Variables  */
 :root {
   --color_Yellow: #f2b735;
@@ -12,8 +12,8 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: "Lato", sans-serif;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Lato', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .grid-container {
@@ -21,9 +21,9 @@
   grid-template-columns: 220px 1fr;
   grid-template-rows: 35px 1fr 35px;
   grid-template-areas:
-    "sidenav header"
-    "sidenav main"
-    "sidenav footer";
+    'sidenav header'
+    'sidenav main'
+    'sidenav footer';
   height: 100vh;
 }
 

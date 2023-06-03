@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const {
   getLogin,
@@ -6,15 +6,15 @@ const {
   getRegister,
   postRegister,
   logout,
-} = require("../controllers/authentication");
-const { checkNotAuthenticated } = require("../middlewares/authentification");
-const { getConnection, connect, closePool } = require("../db/connect");
+} = require('../controllers/authentication');
+const { checkNotAuthenticated } = require('../middlewares/authentification');
+const { getConnection, connect, closePool } = require('../db/connect');
 
 //authentication middleware
-const passport = require("passport");
+const passport = require('passport');
 router.use(express.json());
 
-const initialize = require("../passport-config");
+const initialize = require('../passport-config');
 initialize(
   passport,
   //getUserByEmail
@@ -23,7 +23,7 @@ initialize(
       await connect();
       const connection = await getConnection();
       const result = await connection.execute(
-        "SELECT * FROM users WHERE email = :email",
+        'SELECT * FROM users WHERE email = :email',
         { email }
       );
       await closePool();
@@ -37,7 +37,7 @@ initialize(
           user[columnName] = row[i];
         }
         //test
-        console.log("getUserByEmail", user);
+        console.log('getUserByEmail', user);
         return user;
       }
     } catch (error) {
@@ -50,7 +50,7 @@ initialize(
       await connect();
       const connection = await getConnection();
       const result = await connection.execute(
-        "SELECT * FROM users WHERE TO_NUMBER(id) = :id",
+        'SELECT * FROM users WHERE TO_NUMBER(id) = :id',
         { id }
       );
       await closePool();
@@ -64,7 +64,7 @@ initialize(
           user[columnName] = row[i];
         }
         //test
-        console.log("getUserById", user);
+        console.log('getUserById', user);
         return user;
       }
     } catch (error) {
@@ -76,17 +76,17 @@ initialize(
 router.use(passport.initialize());
 
 //use static files(.css, .html, ...)
-router.use(express.static("./views"));
+router.use(express.static('./views'));
 //login
 router
-  .route("/login")
+  .route('/login')
   .get(checkNotAuthenticated, getLogin)
   .post(checkNotAuthenticated, postLogin);
 //register
 router
-  .route("/register")
+  .route('/register')
   .get(checkNotAuthenticated, getRegister)
   .post(checkNotAuthenticated, postRegister);
 //logout
-router.get("/logout", logout);
+router.get('/logout', logout);
 module.exports = router;
